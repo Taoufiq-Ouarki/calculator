@@ -10,7 +10,7 @@ document.getElementById("calculate").addEventListener("click", async () => {
   result.textContent = "Fetching data...";
 
   try {
-    const apiUrl = `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=apify_api_m6Yq9ro2g9rgCQ36QfFbb4P99ZDiVM2GMtQr`;
+    const apiUrl = `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=`;
 
     const res = await fetch(apiUrl, {
       method: "POST",
