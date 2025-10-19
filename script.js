@@ -54,6 +54,6 @@ document.getElementById("calculate").addEventListener("click", async () => {
     `;
   } catch (err) {
     console.error(err);
-    result.textContent = "Error fetching data. Try again later.";
+    result.textContent = err;
   }
 });
