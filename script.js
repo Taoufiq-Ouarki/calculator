@@ -8,7 +8,7 @@ document.getElementById("calculate").addEventListener("click", async () => {
 
   try {
     // Example using a free API (replace with your own endpoint)
-    const res = await fetch(`https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync?token=YOUR_TOKEN`, {
+    const res = await fetch(`https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync?token=apify_api_m6Yq9ro2g9rgCQ36QfFbb4P99ZDiVM2GMtQr`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ usernames: [username], resultsLimit: 10 })
