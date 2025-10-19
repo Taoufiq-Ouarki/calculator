@@ -2,36 +2,58 @@ document.getElementById("calculate").addEventListener("click", async () => {
   const username = document.getElementById("username").value.trim();
   const result = document.getElementById("result");
 
-  if (!username) return result.textContent = "Please enter a username.";
+  if (!username) {
+    result.textContent = "Please enter a username.";
+    return;
+  }
 
   result.textContent = "Fetching data...";
 
   try {
-    // Example using a free API (replace with your own endpoint)
-    const res = await fetch(`https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync?token=`, {
+    const apiUrl = `https://api.apify.com/v2/acts/epctex~instagram-scraper/run-sync-get-dataset-items?token=apify_api_m6Yq9ro2g9rgCQ36QfFbb4P99ZDiVM2GMtQr`;
+
+    const res = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usernames: [username], resultsLimit: 10 })
+      body: JSON.stringify({
+        addParentData: false,
+        directUrls: [`https://www.instagram.com/${username}`],
+        enhanceUserSearchWithFacebookPage: false,
+        isUserReelFeedURL: false,
+        isUserTaggedFeedURL: false,
+        resultsLimit: 5
+      })
     });
 
     const data = await res.json();
-    const profile = data.items[0];
+    const profile = data[0];
+
+    if (!profile || !profile.followersCount) {
+      result.textContent = "Profile not found, private, or no data available.";
+      return;
+    }
 
     const followers = profile.followersCount;
-    const posts = profile.latestPosts;
-    const avgLikes = posts.reduce((sum, p) => sum + p.likesCount, 0) / posts.length;
-    const avgComments = posts.reduce((sum, p) => sum + p.commentsCount, 0) / posts.length;
+    const posts = profile.latestPosts || [];
 
+    if (posts.length === 0) {
+      result.textContent = "No recent posts found.";
+      return;
+    }
+
+    const avgLikes = posts.reduce((sum, p) => sum + (p.likesCount || 0), 0) / posts.length;
+    const avgComments = posts.reduce((sum, p) => sum + (p.commentsCount || 0), 0) / posts.length;
     const engagement = ((avgLikes + avgComments) / followers) * 100;
 
     result.innerHTML = `
-      <p><b>@${username}</b></p>
+      <h2>@${username}</h2>
       <p>Followers: ${followers.toLocaleString()}</p>
       <p>Average Likes: ${avgLikes.toFixed(0)}</p>
       <p>Average Comments: ${avgComments.toFixed(1)}</p>
-      <h2>Engagement Rate: ${engagement.toFixed(2)}%</h2>
+      <h3>Engagement Rate: ${engagement.toFixed(2)}%</h3>
     `;
-  } catch (e) {
-    result.textContent = "Error fetching data. Try another username.";
+  } catch (err) {
+    console.error(err);
+    result.textContent = "Error fetching data. Try again later.";
   }
 });
